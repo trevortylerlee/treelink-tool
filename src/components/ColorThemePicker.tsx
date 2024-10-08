@@ -1,4 +1,19 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "./ui/label";
+
+interface ThemePickerInterface {
+  name: string;
+  setName: Dispatch<SetStateAction<string>>;
+  bio: string;
+  setBio: Dispatch<SetStateAction<string>>;
+}
 
 type ColorCategory = {
   [key: string]: string;
@@ -69,7 +84,12 @@ const hexToRgb = (hex: string) => {
   return `${(bigint >> 16) & 255} ${(bigint >> 8) & 255} ${bigint & 255}`;
 };
 
-const ColorThemePicker = () => {
+const ColorThemePicker = ({
+  name,
+  setName,
+  bio,
+  setBio,
+}: ThemePickerInterface) => {
   const [colors, setColors] = useState(DEFAULT_COLORS);
 
   const updateColor = useCallback(
@@ -104,7 +124,7 @@ const ColorThemePicker = () => {
               {mode} Mode Colors
             </h2>
           </summary>
-          <div className="mt-4 bg-white p-3 ring-2 ring-black">
+          <div className="mt-4 rounded bg-white p-3 shadow-lg">
             {Object.entries(categories).map(([category, categoryColors]) => (
               <div key={category} className="mb-6">
                 <h3 className="mb-3 text-xl font-semibold capitalize">
@@ -113,13 +133,13 @@ const ColorThemePicker = () => {
                 <div className="3xl:grid-cols-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6">
                   {Object.entries(categoryColors).map(([key, value]) => (
                     <div key={key}>
-                      <label
+                      <Label
                         htmlFor={`${mode}-${category}-${key}`}
                         className="mb-2 block text-sm"
                       >
                         {key.replace(/([A-Z])/g, " $1").trim()}:
-                      </label>
-                      <input
+                      </Label>
+                      <Input
                         id={`${mode}-${category}-${key}`}
                         type="color"
                         value={value}
@@ -144,7 +164,33 @@ const ColorThemePicker = () => {
     ));
   }, [colors, updateColor]);
 
-  return <div className="p-6">{renderColorInputs}</div>;
+  return (
+    <div className="p-6">
+      <div className="mb-8">
+        <Label htmlFor="name">Name</Label>
+        <Input
+          type="text"
+          id="name"
+          value={name}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setName(newValue);
+          }}
+        />
+        <Label htmlFor="bio">Bio</Label>
+        <Input
+          type="text"
+          id="bio"
+          value={bio}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setBio(newValue);
+          }}
+        />
+      </div>
+      {renderColorInputs}
+    </div>
+  );
 };
 
 export default ColorThemePicker;

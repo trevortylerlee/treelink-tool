@@ -18,7 +18,7 @@ export default function DialogDemo(props: DialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild className="float-end flex">
-        <Button variant="ghost" className="size-12 rounded-full p-0">
+        <Button variant="outline" className="size-10 rounded-full p-0">
           {props.children}
         </Button>
       </DialogTrigger>
