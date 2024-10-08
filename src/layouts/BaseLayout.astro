@@ -1,0 +1,40 @@
+---
+import "@/styles/global.css";
+import { Icon } from "astro-icon/components";
+
+import BaseHead from "@/components/BaseHead.astro";
+import InfoDialog from "@/components/InfoDialog";
+import Footer from "@/components/Footer.astro";
+import ColorThemePicker from "@/components/ColorThemePicker";
+---
+
+<html lang="en">
+  <BaseHead>
+    <slot name="head" />
+  </BaseHead>
+  <body class="flex flex-col sm:flex-row">
+    <div
+      class="background-dynamic min-h-screen max-w-screen-sm p-3 font-sans sm:p-6"
+    >
+      <main>
+        <slot />
+      </main>
+      <Footer />
+    </div>
+    <div class="w-full sm:w-3/4">
+      <div class="mt-6 flex items-center justify-between px-6 py-2">
+        <p class="flex flex-wrap items-baseline gap-x-3 text-3xl font-bold">
+          TreeLink <span
+            class="text-sm font-normal text-neutral-400 dark:text-neutral-500"
+            >by <a href="https://trevortylerlee.com" class="underline">Trevor</a
+            ></span
+          >
+        </p>
+        <InfoDialog client:load>
+          <Icon name="information" class="size-6" />
+        </InfoDialog>
+      </div>
+      <ColorThemePicker client:load />
+    </div>
+  </body>
+</html>
