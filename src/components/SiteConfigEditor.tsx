@@ -5,92 +5,27 @@ import React, {
   type Dispatch,
   type SetStateAction,
 } from "react";
+import type { SiteConfig, Colors, ModeColors } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Label } from "./ui/label";
 
-interface ThemePickerInterface {
-  name: string;
-  setName: Dispatch<SetStateAction<string>>;
-  bio: string;
-  setBio: Dispatch<SetStateAction<string>>;
+interface SiteConfigEditorProps {
+  config: SiteConfig;
+  setConfig: Dispatch<SetStateAction<SiteConfig>>;
 }
-
-type ColorCategory = {
-  [key: string]: string;
-};
-
-type ModeColors = {
-  basic: ColorCategory;
-  iconLink: ColorCategory;
-  customLink: ColorCategory;
-};
-
-type Colors = {
-  light: ModeColors;
-  dark: ModeColors;
-};
-
-const DEFAULT_COLORS = {
-  light: {
-    basic: {
-      background: "#f0f0f0",
-      foreground: "#000000",
-      foregroundMuted: "#323232",
-    },
-    iconLink: {
-      outline: "#323232",
-      background: "#ffffff",
-      text: "#000000",
-      outlineHover: "#000000",
-      backgroundHover: "#f0f0f0",
-      textHover: "#000000",
-    },
-    customLink: {
-      outline: "#323232",
-      background: "#ffffff",
-      text: "#000000",
-      outlineHover: "#000000",
-      backgroundHover: "#f0f0f0",
-      textHover: "#000000",
-    },
-  },
-  dark: {
-    basic: {
-      background: "#0a0a0a",
-      foreground: "#ffffff",
-      foregroundMuted: "#cdcdcd",
-    },
-    iconLink: {
-      outline: "#cdcdcd",
-      background: "#000000",
-      text: "#ffffff",
-      outlineHover: "#ffffff",
-      backgroundHover: "#323232",
-      textHover: "#ffffff",
-    },
-    customLink: {
-      outline: "#cdcdcd",
-      background: "#000000",
-      text: "#ffffff",
-      outlineHover: "#ffffff",
-      backgroundHover: "#323232",
-      textHover: "#ffffff",
-    },
-  },
-};
 
 const hexToRgb = (hex: string) => {
   const bigint = parseInt(hex.slice(1), 16);
   return `${(bigint >> 16) & 255} ${(bigint >> 8) & 255} ${bigint & 255}`;
 };
 
-const ColorThemePicker = ({
-  name,
-  setName,
-  bio,
-  setBio,
-}: ThemePickerInterface) => {
-  const [colors, setColors] = useState(DEFAULT_COLORS);
+const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
+  config,
+  setConfig,
+}) => {
+  const updateConfig = useCallback((key: keyof SiteConfig, value: any) => {
+    setConfig((prev) => ({ ...prev, [key]: value }));
+  }, []);
 
   const updateColor = useCallback(
     (
@@ -99,13 +34,16 @@ const ColorThemePicker = ({
       key: string,
       value: string,
     ) => {
-      setColors((prevColors) => ({
-        ...prevColors,
-        [mode]: {
-          ...prevColors[mode],
-          [category]: {
-            ...prevColors[mode][category],
-            [key]: value,
+      setConfig((prev) => ({
+        ...prev,
+        colors: {
+          ...prev.colors,
+          [mode]: {
+            ...prev.colors[mode],
+            [category]: {
+              ...prev.colors[mode][category],
+              [key]: value,
+            },
           },
         },
       }));
@@ -116,7 +54,7 @@ const ColorThemePicker = ({
   );
 
   const renderColorInputs = useMemo(() => {
-    return Object.entries(colors).map(([mode, categories]) => (
+    return Object.entries(config.colors).map(([mode, categories]) => (
       <div key={mode} className="mb-4">
         <details className="flex flex-row hover:bg-neutral-100" open>
           <summary>
@@ -162,7 +100,7 @@ const ColorThemePicker = ({
         </details>
       </div>
     ));
-  }, [colors, updateColor]);
+  }, [config.colors, updateColor]);
 
   return (
     <div className="p-6">
@@ -171,21 +109,15 @@ const ColorThemePicker = ({
         <Input
           type="text"
           id="name"
-          value={name}
-          onChange={(e) => {
-            const newValue = e.target.value;
-            setName(newValue);
-          }}
+          value={config.name}
+          onChange={(e) => updateConfig("name", e.target.value)}
         />
         <Label htmlFor="bio">Bio</Label>
         <Input
           type="text"
           id="bio"
-          value={bio}
-          onChange={(e) => {
-            const newValue = e.target.value;
-            setBio(newValue);
-          }}
+          value={config.bio}
+          onChange={(e) => updateConfig("bio", e.target.value)}
         />
       </div>
       {renderColorInputs}
@@ -193,4 +125,4 @@ const ColorThemePicker = ({
   );
 };
 
-export default ColorThemePicker;
+export default SiteConfigEditor;
