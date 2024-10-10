@@ -28,6 +28,20 @@ const hexToRgb = (hex: string) => {
   return `${(bigint >> 16) & 255} ${(bigint >> 8) & 255} ${bigint & 255}`;
 };
 
+const getCssVarName = (mode: string, category: string, key: string) => {
+  let prefix = `--${mode}-mode-`;
+
+  if (category === "iconLink") {
+    prefix += "icon-link-";
+  } else if (category === "customLink") {
+    prefix += "custom-link-";
+  }
+
+  const kebabKey = key.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+
+  return prefix + kebabKey;
+};
+
 const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
   config,
   setConfig,
@@ -58,7 +72,7 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
           },
         },
       }));
-      const cssVarName = `--${mode}-mode-${category === "basic" ? "" : `${category}-`}${key.replace(/([A-Z])/g, "-$1").toLowerCase()}`;
+      const cssVarName = getCssVarName(mode, category, key);
       document.documentElement.style.setProperty(cssVarName, hexToRgb(value));
     },
     [],
@@ -118,10 +132,28 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
     [setConfig, numberOfIconLinks],
   );
 
+  const exportConfig = useCallback(() => {
+    const configToExport = {
+      ...config,
+      profilePicture: config.profilePicture.startsWith("data:")
+        ? "/profile-picture.jpg"
+        : config.profilePicture,
+    };
+    const blob = new Blob([JSON.stringify(configToExport, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "siteConfig.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [config]);
+
   const renderColorInputs = useMemo(() => {
     return Object.entries(config.colors).map(([mode, categories]) => (
-      <div key={mode} className="mb-4">
-        <details className="flex flex-row hover:bg-neutral-100" open>
+      <div key={mode}>
+        <details className="flex flex-row">
           <summary>
             <h2 className="inline-flex cursor-pointer p-3 font-bold capitalize">
               {mode} Mode Colors
@@ -198,17 +230,11 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
           />
         </div>
       </div>
+
       <div>
         <h3 className="mb-2 text-lg font-semibold">Icon Links</h3>
         {config.iconLinks.map((link: IconLink) => (
           <div key={link.id} className="mb-2 flex items-center space-x-2">
-            {/* <Input
-              placeholder="Icon"
-              value={link.icon}
-              onChange={(e) =>
-                updateLink("iconLinks", link.id, "icon", e.target.value)
-              }
-            /> */}
             <IconCombobox
               value={link.icon}
               onChange={(newValue: string) =>
@@ -228,7 +254,7 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
               size="icon"
               className="aspect-square"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="size-4" />
             </Button>
           </div>
         ))}
@@ -238,7 +264,7 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
             variant="outline"
             size="sm"
           >
-            <PlusCircle className="mr-2 h-4 w-4" /> Add Icon Link
+            <PlusCircle className="mr-2 size-4" /> Add Icon Link
           </Button>
         ) : null}
       </div>
@@ -265,8 +291,9 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
               onClick={() => removeLink("customLinks", link.id)}
               variant="destructive"
               size="icon"
+              className="aspect-square"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="size-4" />
             </Button>
           </div>
         ))}
@@ -275,10 +302,11 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
           variant="outline"
           size="sm"
         >
-          <PlusCircle className="mr-2 h-4 w-4" /> Add Custom Link
+          <PlusCircle className="mr-2 size-4" /> Add Custom Link
         </Button>
       </div>
-      {renderColorInputs}
+      <div className="pt-4">{renderColorInputs}</div>
+      <Button onClick={exportConfig}>Export Config</Button>
     </div>
   );
 };

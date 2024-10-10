@@ -1,6 +1,37 @@
-import { GitHubIcon, LinkIcon } from "./Icons";
+import {
+  AdobeIcon,
+  AliexpressIcon,
+  AmazonIcon,
+  AppleArcadeIcon,
+  AppleIcon,
+  AppleMusicIcon,
+  AppStoreIcon,
+  ArchIcon,
+  AstroIcon,
+  BandcampIcon,
+  BitBucketIcon,
+  BitcoinIcon,
+  BlueskyIcon,
+  BuyMeACoffeeIcon,
+  GitHubIcon,
+  LinkIcon,
+} from "./Icons";
 
 export const iconMap: { [key: string]: JSX.Element } = {
+  adobe: <AdobeIcon />,
+  aliexpress: <AliexpressIcon />,
+  amazon: <AmazonIcon />,
+  appStore: <AppStoreIcon />,
+  apple: <AppleIcon />,
+  appleArcade: <AppleArcadeIcon />,
+  appleMusic: <AppleMusicIcon />,
+  arch: <ArchIcon />,
+  astro: <AstroIcon />,
+  bandcamp: <BandcampIcon />,
+  bitbucket: <BitBucketIcon />,
+  bitcoin: <BitcoinIcon />,
+  bluesky: <BlueskyIcon />,
+  buyMeACoffee: <BuyMeACoffeeIcon />,
   github: <GitHubIcon />,
   link: <LinkIcon />,
 };

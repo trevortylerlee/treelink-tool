@@ -68,12 +68,12 @@
     --radius: 0.5rem;
   }
 
-  .background-dynamic {
+  /* .background-dynamic {
     background-color: light-dark(
       rgb(var(--light-mode-background)),
       rgb(var(--dark-mode-background))
     );
-  }
+  } */
 
   .dark {
     --background: 0 0% 3.9%;

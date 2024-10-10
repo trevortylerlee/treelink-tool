@@ -19,6 +19,58 @@ import {
 
 const links = [
   {
+    value: "adobe",
+    label: "Adobe",
+  },
+  {
+    value: "aliexpress",
+    label: "Aliexpress",
+  },
+  {
+    value: "appStore",
+    label: "App Store",
+  },
+  {
+    value: "apple",
+    label: "Apple",
+  },
+  {
+    value: "appleArcade",
+    label: "Apple Arcade",
+  },
+  {
+    value: "appleMusic",
+    label: "Apple Music",
+  },
+  {
+    value: "arch",
+    label: "Arch",
+  },
+  {
+    value: "astro",
+    label: "Astro",
+  },
+  {
+    value: "bandcamp",
+    label: "Bandcamp",
+  },
+  {
+    value: "bitbucket",
+    label: "BitBucket",
+  },
+  {
+    value: "bitcoin",
+    label: "Bitcoin",
+  },
+  {
+    value: "bluesky",
+    label: "Bluesky",
+  },
+  {
+    value: "buyMeACoffee",
+    label: "Buy Me A Coffee",
+  },
+  {
     value: "github",
     label: "GitHub",
   },

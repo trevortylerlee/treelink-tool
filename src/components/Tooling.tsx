@@ -57,8 +57,20 @@ const DEFAULT_CONFIG: SiteConfig = {
       },
     },
   },
-  iconLinks: [],
-  customLinks: [],
+  iconLinks: [
+    {
+      id: "1728534577184",
+      icon: "github",
+      url: "https://github.com/trevortylerlee",
+    },
+  ],
+  customLinks: [
+    {
+      id: "1728534585730",
+      title: "customLink Title",
+      url: "https://boogerbuttcheeks.com",
+    },
+  ],
 };
 
 export default function Tooling() {
