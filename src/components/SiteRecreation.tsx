@@ -1,5 +1,6 @@
 import type { SiteConfig, IconLink, CustomLink } from "@/types";
-import { useState } from "react";
+
+import { iconMap } from "./IconMap";
 
 interface SiteRecreationProps {
   config: SiteConfig;
@@ -12,7 +13,7 @@ const SiteRecreation: React.FC<SiteRecreationProps> = ({ config }) => {
       {/* Introduction */}
       <div className="mt-8">
         <img
-          src="/profile-picture.jpg"
+          src={config.profilePicture}
           className="mx-auto size-32 rounded-full"
         />
       </div>
@@ -22,6 +23,36 @@ const SiteRecreation: React.FC<SiteRecreationProps> = ({ config }) => {
       <p className="mt-1 text-balance text-center text-sm text-lightModeForegroundMuted dark:text-darkModeForegroundMuted">
         {config.bio}
       </p>
+      {/* Icon Links */}
+      <div className="mt-4 flex justify-center space-x-4">
+        {config.iconLinks.map((link: IconLink) => (
+          <a
+            key={link.id}
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="square group flex size-10 items-center justify-center rounded-full bg-lightModeIconLinkBackground p-3 ring-2 ring-lightModeIconLinkOutline transition-colors hover:bg-lightModeIconLinkBackgroundHover hover:ring-lightModeIconLinkOutlineHover dark:bg-darkModeIconLinkBackground dark:ring-darkModeIconLinkOutline dark:hover:bg-darkModeIconLinkBackgroundHover dark:hover:ring-darkModeIconLinkOutlineHover"
+          >
+            <span className="text-lightModeIconLinkText transition-colors group-hover:text-lightModeIconLinkTextHover dark:text-darkModeIconLinkText group-hover:dark:text-darkModeIconLinkTextHover">
+              {iconMap[link.icon] || iconMap.default}
+            </span>
+          </a>
+        ))}
+      </div>
+      {/* Custom Links */}
+      <div className="mt-6 space-y-4">
+        {config.customLinks.map((link: CustomLink) => (
+          <a
+            key={link.id}
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full rounded-md bg-lightModeCustomLinkBackground px-4 py-3 text-center text-lightModeCustomLinkText hover:bg-lightModeCustomLinkBackgroundHover hover:text-lightModeCustomLinkTextHover dark:bg-darkModeCustomLinkBackground dark:text-darkModeCustomLinkText dark:hover:bg-darkModeCustomLinkBackgroundHover dark:hover:text-darkModeCustomLinkTextHover"
+          >
+            {link.title}
+          </a>
+        ))}
+      </div>
     </div>
   );
 };

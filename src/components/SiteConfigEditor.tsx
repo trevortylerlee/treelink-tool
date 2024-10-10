@@ -5,9 +5,18 @@ import React, {
   type Dispatch,
   type SetStateAction,
 } from "react";
-import type { SiteConfig, Colors, ModeColors } from "@/types";
+import type {
+  SiteConfig,
+  Colors,
+  ModeColors,
+  IconLink,
+  CustomLink,
+} from "@/types";
 import { Input } from "@/components/ui/input";
-import { Label } from "./ui/label";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { IconCombobox } from "./IconCombobox";
+import { PlusCircle, Trash2 } from "lucide-react";
 
 interface SiteConfigEditorProps {
   config: SiteConfig;
@@ -26,6 +35,8 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
   const updateConfig = useCallback((key: keyof SiteConfig, value: any) => {
     setConfig((prev) => ({ ...prev, [key]: value }));
   }, []);
+
+  const [numberOfIconLinks, setNumberOfIconLinks] = useState(0);
 
   const updateColor = useCallback(
     (
@@ -51,6 +62,60 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
       document.documentElement.style.setProperty(cssVarName, hexToRgb(value));
     },
     [],
+  );
+
+  const handleFileUpload = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          updateConfig("profilePicture", reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    [updateConfig],
+  );
+
+  const addLink = useCallback(
+    (type: "iconLinks" | "customLinks") => {
+      const newLink =
+        type === "iconLinks"
+          ? { id: Date.now().toString(), icon: "", url: "" }
+          : { id: Date.now().toString(), title: "", url: "" };
+      setConfig((prev) => ({ ...prev, [type]: [...prev[type], newLink] }));
+      setNumberOfIconLinks(numberOfIconLinks + 1);
+    },
+    [setConfig, numberOfIconLinks],
+  );
+
+  const updateLink = useCallback(
+    (
+      type: "iconLinks" | "customLinks",
+      id: string,
+      key: string,
+      value: string,
+    ) => {
+      setConfig((prev) => ({
+        ...prev,
+        [type]: prev[type].map((link) =>
+          link.id === id ? { ...link, [key]: value } : link,
+        ),
+      }));
+    },
+    [setConfig],
+  );
+
+  const removeLink = useCallback(
+    (type: "iconLinks" | "customLinks", id: string) => {
+      setConfig((prev) => ({
+        ...prev,
+        [type]: prev[type].filter((link) => link.id !== id),
+      }));
+      setNumberOfIconLinks(numberOfIconLinks - 1);
+    },
+    [setConfig, numberOfIconLinks],
   );
 
   const renderColorInputs = useMemo(() => {
@@ -103,22 +168,115 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
   }, [config.colors, updateColor]);
 
   return (
-    <div className="p-6">
-      <div className="mb-8">
-        <Label htmlFor="name">Name</Label>
-        <Input
-          type="text"
-          id="name"
-          value={config.name}
-          onChange={(e) => updateConfig("name", e.target.value)}
-        />
-        <Label htmlFor="bio">Bio</Label>
-        <Input
-          type="text"
-          id="bio"
-          value={config.bio}
-          onChange={(e) => updateConfig("bio", e.target.value)}
-        />
+    <div className="space-y-8 p-6">
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="name">Name</Label>
+          <Input
+            type="text"
+            id="name"
+            value={config.name}
+            onChange={(e) => updateConfig("name", e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="bio">Bio</Label>
+          <Input
+            type="text"
+            id="bio"
+            value={config.bio}
+            onChange={(e) => updateConfig("bio", e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="profilePicture">Profile Picture</Label>
+          <Input
+            type="file"
+            id="profilePicture"
+            accept="image/*"
+            onChange={handleFileUpload}
+          />
+        </div>
+      </div>
+      <div>
+        <h3 className="mb-2 text-lg font-semibold">Icon Links</h3>
+        {config.iconLinks.map((link: IconLink) => (
+          <div key={link.id} className="mb-2 flex items-center space-x-2">
+            {/* <Input
+              placeholder="Icon"
+              value={link.icon}
+              onChange={(e) =>
+                updateLink("iconLinks", link.id, "icon", e.target.value)
+              }
+            /> */}
+            <IconCombobox
+              value={link.icon}
+              onChange={(newValue: string) =>
+                updateLink("iconLinks", link.id, "icon", newValue)
+              }
+            />
+            <Input
+              placeholder="URL"
+              value={link.url}
+              onChange={(e) =>
+                updateLink("iconLinks", link.id, "url", e.target.value)
+              }
+            />
+            <Button
+              onClick={() => removeLink("iconLinks", link.id)}
+              variant="destructive"
+              size="icon"
+              className="aspect-square"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        ))}
+        {numberOfIconLinks < 6 ? (
+          <Button
+            onClick={() => addLink("iconLinks")}
+            variant="outline"
+            size="sm"
+          >
+            <PlusCircle className="mr-2 h-4 w-4" /> Add Icon Link
+          </Button>
+        ) : null}
+      </div>
+
+      <div>
+        <h3 className="mb-2 text-lg font-semibold">Custom Links</h3>
+        {config.customLinks.map((link: CustomLink) => (
+          <div key={link.id} className="mb-2 flex items-center space-x-2">
+            <Input
+              placeholder="Title"
+              value={link.title}
+              onChange={(e) =>
+                updateLink("customLinks", link.id, "title", e.target.value)
+              }
+            />
+            <Input
+              placeholder="URL"
+              value={link.url}
+              onChange={(e) =>
+                updateLink("customLinks", link.id, "url", e.target.value)
+              }
+            />
+            <Button
+              onClick={() => removeLink("customLinks", link.id)}
+              variant="destructive"
+              size="icon"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          onClick={() => addLink("customLinks")}
+          variant="outline"
+          size="sm"
+        >
+          <PlusCircle className="mr-2 h-4 w-4" /> Add Custom Link
+        </Button>
       </div>
       {renderColorInputs}
     </div>
