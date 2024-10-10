@@ -17,7 +17,7 @@ const SiteRecreation: React.FC<SiteRecreationProps> = ({ config }) => {
           className="mx-auto size-32 rounded-full"
           draggable="false"
           loading="eager"
-          alt="Profile picture"
+          alt="Profile"
         />
       </div>
       <h1 className="mt-4 text-center text-3xl font-semibold text-lightModeForeground dark:text-darkModeForeground">
