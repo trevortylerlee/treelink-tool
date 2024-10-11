@@ -12,6 +12,7 @@ import type {
   IconLink,
   CustomLink,
 } from "@/types";
+import JSZip from "jszip";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -132,20 +133,41 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
     [setConfig, numberOfIconLinks],
   );
 
-  const exportConfig = useCallback(() => {
+  const exportConfigZip = useCallback(async () => {
+    const zip = new JSZip();
+
+    // Prepare the config JSON
     const configToExport = {
       ...config,
-      profilePicture: config.profilePicture.startsWith("data:")
-        ? "/profile-picture.jpg"
-        : config.profilePicture,
+      profilePicture: "/profile-picture.jpg",
     };
-    const blob = new Blob([JSON.stringify(configToExport, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
+
+    // Add the JSON config to the zip
+    zip.file("siteConfig.json", JSON.stringify(configToExport, null, 2));
+
+    // Add the profile picture to the zip
+    if (config.profilePicture.startsWith("data:")) {
+      // Convert base64 to blob
+      const response = await fetch(config.profilePicture);
+      const blob = await response.blob();
+      zip.file("profile-picture.jpg", blob);
+    } else {
+      // If it's a URL, you might want to fetch it first
+      // For now, we'll just add a placeholder text file
+      zip.file(
+        "profile-picture.txt",
+        "Please manually add your profile picture here.",
+      );
+    }
+
+    // Generate the zip file
+    const content = await zip.generateAsync({ type: "blob" });
+
+    // Trigger download
+    const url = URL.createObjectURL(content);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "siteConfig.json";
+    a.download = "site-config.zip";
     a.click();
     URL.revokeObjectURL(url);
   }, [config]);
@@ -313,7 +335,7 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
         </Button>
       </div>
       <div className="pt-4">{renderColorInputs}</div>
-      <Button onClick={exportConfig}>Export Config</Button>
+      <Button onClick={exportConfigZip}>Export Config</Button>
     </div>
   );
 };
