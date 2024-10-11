@@ -158,6 +158,9 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
             <h2 className="inline-flex cursor-pointer p-3 font-bold capitalize">
               {mode} Mode Colors
             </h2>
+            <span id={mode} className="hidden text-sm opacity-50">
+              Active
+            </span>
           </summary>
           <div className="mt-4 rounded bg-white p-3 shadow-lg">
             {Object.entries(categories).map(([category, categoryColors]) => (
@@ -172,7 +175,11 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
                         htmlFor={`${mode}-${category}-${key}`}
                         className="mb-2 block text-sm"
                       >
-                        {key.replace(/([A-Z])/g, " $1").trim()}:
+                        {key
+                          .replace(/([A-Z])/g, " $1")
+                          .trim()
+                          .toLowerCase()}
+                        :
                       </Label>
                       <Input
                         id={`${mode}-${category}-${key}`}
