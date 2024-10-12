@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { IconCombobox } from "./IconCombobox";
+import { LocaleSelect } from "./LocaleSelect";
 import { PlusCircle, Trash2 } from "lucide-react";
 
 interface SiteConfigEditorProps {
@@ -256,6 +257,15 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
             id="profilePicture"
             accept="image/*"
             onChange={handleFileUpload}
+          />
+        </div>
+        <div>
+          <Label htmlFor="url">URL</Label>
+          <Input
+            type="text"
+            id="url"
+            value={config.url}
+            onChange={(e) => updateConfig("url", e.target.value)}
           />
         </div>
       </div>

@@ -19,6 +19,7 @@ export interface SiteConfig {
   name: string;
   bio: string;
   profilePicture: string;
+  url: string;
   colors: Colors;
   iconLinks: IconLink[];
   customLinks: CustomLink[];

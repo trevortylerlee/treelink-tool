@@ -9,6 +9,7 @@ const DEFAULT_CONFIG: SiteConfig = {
   name: "Trevor Tyler Lee",
   bio: "Free, open source LinkTree alternative built with Astro & Tailwind CSS",
   profilePicture: "/profile-picture.jpg",
+  url: "https://trevortylerlee.com",
   colors: {
     light: {
       basic: {
@@ -61,7 +62,7 @@ const DEFAULT_CONFIG: SiteConfig = {
     {
       id: "1728534577184",
       icon: "link",
-      url: "https://trevortylerlee.com",
+      url: "https://boogerbuttcheeks.com",
     },
     {
       id: "1728534577185",
@@ -83,7 +84,7 @@ const DEFAULT_CONFIG: SiteConfig = {
     {
       id: "1728534585738",
       title: "🍌 donkey kong country on the snes",
-      url: "https://tinyurl.com/2zp9r772",
+      url: "https://youtu.be/7hgr-ZuzXng?si=v3dr9mu2cBL_D4ED",
     },
     {
       id: "1728534585739",
