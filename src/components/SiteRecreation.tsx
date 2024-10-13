@@ -57,40 +57,42 @@ const SiteRecreation: React.FC<SiteRecreationProps> = ({ config }) => {
         ))}
       </div>
       {/* Blog posts */}
-      <div className="flex flex-col gap-y-8 pb-16 pt-24">
-        <div>
-          <span className="flex flex-wrap justify-center text-balance text-2xl font-medium text-lightModeForeground dark:text-darkModeForeground">
-            The Metamorphosis (1915)
-          </span>
-          <div className="mt-1 text-center text-sm text-lightModeForegroundMuted dark:text-darkModeForegroundMuted">
-            2024-08-02
+      {config.blog ? (
+        <div className="flex flex-col gap-y-8 pb-16 pt-24">
+          <div>
+            <span className="flex flex-wrap justify-center text-balance text-2xl font-medium text-lightModeForeground dark:text-darkModeForeground">
+              The Metamorphosis (1915)
+            </span>
+            <div className="mt-1 text-center text-sm text-lightModeForegroundMuted dark:text-darkModeForegroundMuted">
+              2024-08-02
+            </div>
+          </div>
+          <div>
+            <span className="flex flex-wrap justify-center text-balance text-2xl font-medium text-lightModeForeground dark:text-darkModeForeground">
+              The Yellow Wallpaper (1892)
+            </span>
+            <div className="mt-1 text-center text-sm text-lightModeForegroundMuted dark:text-darkModeForegroundMuted">
+              2024-07-04
+            </div>
+          </div>
+          <div>
+            <span className="flex flex-wrap justify-center text-balance text-2xl font-medium text-lightModeForeground dark:text-darkModeForeground">
+              Alice in Wonderland (1865)
+            </span>
+            <div className="mt-1 text-center text-sm text-lightModeForegroundMuted dark:text-darkModeForegroundMuted">
+              2024-07-01
+            </div>
+          </div>
+          <div>
+            <span className="flex flex-wrap justify-center text-balance text-2xl font-medium text-lightModeForeground dark:text-darkModeForeground">
+              The Legend of Sleepy Hollow (1820)
+            </span>
+            <div className="mt-1 text-center text-sm text-lightModeForegroundMuted dark:text-darkModeForegroundMuted">
+              2024-06-30
+            </div>
           </div>
         </div>
-        <div>
-          <span className="flex flex-wrap justify-center text-balance text-2xl font-medium text-lightModeForeground dark:text-darkModeForeground">
-            The Yellow Wallpaper (1892)
-          </span>
-          <div className="mt-1 text-center text-sm text-lightModeForegroundMuted dark:text-darkModeForegroundMuted">
-            2024-07-04
-          </div>
-        </div>
-        <div>
-          <span className="flex flex-wrap justify-center text-balance text-2xl font-medium text-lightModeForeground dark:text-darkModeForeground">
-            Alice in Wonderland (1865)
-          </span>
-          <div className="mt-1 text-center text-sm text-lightModeForegroundMuted dark:text-darkModeForegroundMuted">
-            2024-07-01
-          </div>
-        </div>
-        <div>
-          <span className="flex flex-wrap justify-center text-balance text-2xl font-medium text-lightModeForeground dark:text-darkModeForeground">
-            The Legend of Sleepy Hollow (1820)
-          </span>
-          <div className="mt-1 text-center text-sm text-lightModeForegroundMuted dark:text-darkModeForegroundMuted">
-            2024-06-30
-          </div>
-        </div>
-      </div>
+      ) : null}
     </div>
   );
 };

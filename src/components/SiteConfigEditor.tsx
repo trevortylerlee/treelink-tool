@@ -17,12 +17,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { IconCombobox } from "./IconCombobox";
-import { LocaleSelect } from "./LocaleSelect";
+import { Checkbox } from "./ui/checkbox";
 import { PlusCircle, Trash2 } from "lucide-react";
 
 interface SiteConfigEditorProps {
   config: SiteConfig;
   setConfig: Dispatch<SetStateAction<SiteConfig>>;
+  colors: Colors;
+  setColors: Dispatch<SetStateAction<Colors>>;
 }
 
 const hexToRgb = (hex: string) => {
@@ -47,12 +49,18 @@ const getCssVarName = (mode: string, category: string, key: string) => {
 const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
   config,
   setConfig,
+  colors,
+  setColors,
 }) => {
+  const [numberOfIconLinks, setNumberOfIconLinks] = useState(4);
+
   const updateConfig = useCallback((key: keyof SiteConfig, value: any) => {
     setConfig((prev) => ({ ...prev, [key]: value }));
   }, []);
 
-  const [numberOfIconLinks, setNumberOfIconLinks] = useState(0);
+  const updateColors = useCallback((key: keyof Colors, value: any) => {
+    setColors((prev) => ({ ...prev, [key]: value }));
+  }, []);
 
   const updateColor = useCallback(
     (
@@ -61,19 +69,17 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
       key: string,
       value: string,
     ) => {
-      setConfig((prev) => ({
+      setColors((prev) => ({
         ...prev,
-        colors: {
-          ...prev.colors,
-          [mode]: {
-            ...prev.colors[mode],
-            [category]: {
-              ...prev.colors[mode][category],
-              [key]: value,
-            },
+        [mode]: {
+          ...prev[mode],
+          [category]: {
+            ...prev[mode][category],
+            [key]: value,
           },
         },
       }));
+
       const cssVarName = getCssVarName(mode, category, key);
       document.documentElement.style.setProperty(cssVarName, hexToRgb(value));
     },
@@ -102,6 +108,7 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
           : { id: Date.now().toString(), title: "", url: "" };
       setConfig((prev) => ({ ...prev, [type]: [...prev[type], newLink] }));
       setNumberOfIconLinks(numberOfIconLinks + 1);
+      console.log(numberOfIconLinks);
     },
     [setConfig, numberOfIconLinks],
   );
@@ -136,15 +143,39 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
 
   const exportConfigZip = useCallback(async () => {
     const zip = new JSZip();
-
     // Prepare the config JSON
     const configToExport = {
       ...config,
       profilePicture: "/profile-picture.jpg",
     };
-
     // Add the JSON config to the zip
     zip.file("siteConfig.json", JSON.stringify(configToExport, null, 2));
+
+    // Format colors for colorsConfig.txt
+    const formattedColors = Object.entries(colors)
+      .flatMap(([mode, modeColors]) =>
+        Object.entries(modeColors).flatMap(([section, sectionColors]) =>
+          Object.entries(sectionColors).map(([key, value]) => {
+            const rgbResult = exportHexToRgb(value);
+            if (rgbResult === null) {
+              console.error(`Invalid color value: ${value}`);
+              return "";
+            }
+            const [r, g, b] = rgbResult;
+            const formattedSection =
+              section === "basic"
+                ? ""
+                : `${section.replace(/([A-Z])/g, "-$1").toLowerCase()}-`;
+            const formattedKey = `${mode}-mode-${formattedSection}${key.replace(/([A-Z])/g, "-$1").toLowerCase()}`;
+            return `--${formattedKey}: ${r} ${g} ${b};`;
+          }),
+        ),
+      )
+      .filter(Boolean)
+      .join("\n");
+
+    // Add the formatted colors to the zip
+    zip.file("colorsConfig.txt", formattedColors);
 
     // Add the profile picture to the zip
     if (config.profilePicture.startsWith("data:")) {
@@ -160,10 +191,8 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
         "Please manually add your profile picture here.",
       );
     }
-
     // Generate the zip file
     const content = await zip.generateAsync({ type: "blob" });
-
     // Trigger download
     const url = URL.createObjectURL(content);
     const a = document.createElement("a");
@@ -171,10 +200,24 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
     a.download = "site-config.zip";
     a.click();
     URL.revokeObjectURL(url);
-  }, [config]);
+  }, [config, colors]);
+
+  // Helper function to convert hex to RGB
+  function exportHexToRgb(hex: string): number[] | null {
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+      ? [
+          parseInt(result[1], 16),
+          parseInt(result[2], 16),
+          parseInt(result[3], 16),
+        ]
+      : null;
+  }
 
   const renderColorInputs = useMemo(() => {
-    return Object.entries(config.colors).map(([mode, categories]) => (
+    return Object.entries(colors).map(([mode, categories]) => (
       <div key={mode}>
         <details className="flex flex-row">
           <summary>
@@ -227,7 +270,7 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
         </details>
       </div>
     ));
-  }, [config.colors, updateColor]);
+  }, [colors, updateColor]);
 
   return (
     <div className="space-y-8 p-6">
@@ -267,6 +310,26 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
             value={config.url}
             onChange={(e) => updateConfig("url", e.target.value)}
           />
+        </div>
+        <div className="items-top flex space-x-2 pt-4">
+          <Checkbox
+            id="blog"
+            checked={config.blog}
+            onCheckedChange={(checked) =>
+              setConfig({ ...config, blog: Boolean(checked) })
+            }
+          />
+          <div className="grid gap-1.5 leading-none">
+            <Label
+              htmlFor="blog"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Enable blog
+            </Label>
+            <Label className="text-sm text-muted-foreground" htmlFor="blog">
+              You can change the titles and content of your blog posts later.
+            </Label>
+          </div>
         </div>
       </div>
 

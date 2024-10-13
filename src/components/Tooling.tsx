@@ -3,61 +3,14 @@ import { useState } from "react";
 import InfoDialog from "@/components/InfoDialog";
 import SiteConfigEditor from "@/components/SiteConfigEditor";
 import SiteRecreation from "@/components/SiteRecreation";
-import { type SiteConfig } from "@/types";
+import type { SiteConfig, Colors } from "@/types";
 
 const DEFAULT_CONFIG: SiteConfig = {
   name: "Trevor Tyler Lee",
   bio: "Free, open source LinkTree alternative built with Astro & Tailwind CSS",
   profilePicture: "/profile-picture.jpg",
   url: "https://trevortylerlee.com",
-  colors: {
-    light: {
-      basic: {
-        background: "#f0f0f0",
-        foreground: "#000000",
-        foregroundMuted: "#323232",
-      },
-      iconLink: {
-        background: "#ffffff",
-        backgroundHover: "#f0f0f0",
-        outline: "#323232",
-        outlineHover: "#000000",
-        text: "#000000",
-        textHover: "#000000",
-      },
-      customLink: {
-        background: "#ffffff",
-        backgroundHover: "#f0f0f0",
-        outline: "#323232",
-        outlineHover: "#000000",
-        text: "#000000",
-        textHover: "#000000",
-      },
-    },
-    dark: {
-      basic: {
-        background: "#0a0a0a",
-        foreground: "#ffffff",
-        foregroundMuted: "#cdcdcd",
-      },
-      iconLink: {
-        background: "#000000",
-        backgroundHover: "#323232",
-        outline: "#cdcdcd",
-        outlineHover: "#ffffff",
-        text: "#ffffff",
-        textHover: "#ffffff",
-      },
-      customLink: {
-        background: "#000000",
-        backgroundHover: "#323232",
-        outline: "#cdcdcd",
-        outlineHover: "#ffffff",
-        text: "#ffffff",
-        textHover: "#ffffff",
-      },
-    },
-  },
+  blog: true,
   iconLinks: [
     {
       id: "1728534577184",
@@ -109,8 +62,58 @@ const DEFAULT_CONFIG: SiteConfig = {
   ],
 };
 
+const DEFAULT_COLORS: Colors = {
+  light: {
+    basic: {
+      background: "#f0f0f0",
+      foreground: "#000000",
+      foregroundMuted: "#323232",
+    },
+    iconLink: {
+      background: "#ffffff",
+      backgroundHover: "#f0f0f0",
+      outline: "#323232",
+      outlineHover: "#000000",
+      text: "#000000",
+      textHover: "#000000",
+    },
+    customLink: {
+      background: "#ffffff",
+      backgroundHover: "#f0f0f0",
+      outline: "#323232",
+      outlineHover: "#000000",
+      text: "#000000",
+      textHover: "#000000",
+    },
+  },
+  dark: {
+    basic: {
+      background: "#0a0a0a",
+      foreground: "#ffffff",
+      foregroundMuted: "#cdcdcd",
+    },
+    iconLink: {
+      background: "#000000",
+      backgroundHover: "#323232",
+      outline: "#cdcdcd",
+      outlineHover: "#ffffff",
+      text: "#ffffff",
+      textHover: "#ffffff",
+    },
+    customLink: {
+      background: "#000000",
+      backgroundHover: "#323232",
+      outline: "#cdcdcd",
+      outlineHover: "#ffffff",
+      text: "#ffffff",
+      textHover: "#ffffff",
+    },
+  },
+};
+
 export default function Tooling() {
   const [config, setConfig] = useState<SiteConfig>(DEFAULT_CONFIG);
+  const [colors, setColors] = useState<Colors>(DEFAULT_COLORS);
 
   return (
     <>
@@ -131,7 +134,12 @@ export default function Tooling() {
           </div>
           <InfoDialog>?</InfoDialog>
         </div>
-        <SiteConfigEditor config={config} setConfig={setConfig} />
+        <SiteConfigEditor
+          config={config}
+          setConfig={setConfig}
+          colors={colors}
+          setColors={setColors}
+        />
       </div>
     </>
   );

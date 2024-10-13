@@ -20,7 +20,7 @@ export interface SiteConfig {
   bio: string;
   profilePicture: string;
   url: string;
-  colors: Colors;
+  blog: boolean;
   iconLinks: IconLink[];
   customLinks: CustomLink[];
 }
