@@ -116,10 +116,10 @@ export default function Tooling() {
   const [colors, setColors] = useState<Colors>(DEFAULT_COLORS);
 
   return (
-    <>
+    <div className="flex w-full flex-col sm:flex-row">
       <SiteRecreation config={config} />
       <div className="w-full">
-        <div className="mt-6 flex items-center justify-between px-6 py-2">
+        <div className="mt-6 flex items-center justify-between px-2 py-2 sm:px-6">
           <div className="flex items-center gap-1.5">
             <img src="/android-chrome-192x192.png" className="size-8" />
             <p className="flex flex-wrap items-baseline gap-x-3 text-3xl font-bold">
@@ -141,6 +141,6 @@ export default function Tooling() {
           setColors={setColors}
         />
       </div>
-    </>
+    </div>
   );
 }

@@ -1,4 +1,5 @@
-import React, {
+import {
+  type ChangeEvent,
   useState,
   useCallback,
   useMemo,
@@ -17,15 +18,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { IconCombobox } from "./IconCombobox";
+import ThemeSelector from "./ThemeSelector";
 import { Checkbox } from "./ui/checkbox";
 import { PlusCircle, Trash2 } from "lucide-react";
-
-interface SiteConfigEditorProps {
-  config: SiteConfig;
-  setConfig: Dispatch<SetStateAction<SiteConfig>>;
-  colors: Colors;
-  setColors: Dispatch<SetStateAction<Colors>>;
-}
 
 const hexToRgb = (hex: string) => {
   const bigint = parseInt(hex.slice(1), 16);
@@ -46,12 +41,19 @@ const getCssVarName = (mode: string, category: string, key: string) => {
   return prefix + kebabKey;
 };
 
-const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
+interface SiteConfigEditorProps {
+  config: SiteConfig;
+  setConfig: Dispatch<SetStateAction<SiteConfig>>;
+  colors: Colors;
+  setColors: Dispatch<SetStateAction<Colors>>;
+}
+
+const SiteConfigEditor = ({
   config,
   setConfig,
   colors,
   setColors,
-}) => {
+}: SiteConfigEditorProps) => {
   const [numberOfIconLinks, setNumberOfIconLinks] = useState(4);
 
   const updateConfig = useCallback((key: keyof SiteConfig, value: any) => {
@@ -87,7 +89,7 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
   );
 
   const handleFileUpload = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (file) {
         const reader = new FileReader();
@@ -188,7 +190,7 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
       // For now, we'll just add a placeholder text file
       zip.file(
         "profile-picture.txt",
-        "Please manually add your profile picture here.",
+        'There was an error exporting your profile picture. Please manually add it to your project in /src/assets. It should be a square jpg file named "profile-picture.jpg".',
       );
     }
     // Generate the zip file
@@ -228,12 +230,10 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
               Active
             </span>
           </summary>
-          <div className="mt-4 rounded bg-white p-3 shadow-lg">
+          <div className="mt-4 rounded bg-white p-3">
             {Object.entries(categories).map(([category, categoryColors]) => (
               <div key={category} className="mb-6">
-                <h3 className="mb-3 text-xl font-semibold capitalize">
-                  {category}
-                </h3>
+                <h3 className="mb-3 font-semibold capitalize">{category}</h3>
                 <div className="3xl:grid-cols-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6">
                   {Object.entries(categoryColors).map(([key, value]) => (
                     <div key={key}>
@@ -273,7 +273,7 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
   }, [colors, updateColor]);
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-8 p-2 sm:p-6">
       <div className="space-y-4">
         <div>
           <Label htmlFor="name">Name</Label>
@@ -326,7 +326,10 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
             >
               Enable blog
             </Label>
-            <Label className="text-sm text-muted-foreground" htmlFor="blog">
+            <Label
+              className="text-sm font-normal text-muted-foreground"
+              htmlFor="blog"
+            >
               You can change the titles and content of your blog posts later.
             </Label>
           </div>
@@ -407,8 +410,17 @@ const SiteConfigEditor: React.FC<SiteConfigEditorProps> = ({
           <PlusCircle className="mr-2 size-4" /> Add Custom Link
         </Button>
       </div>
-      <div className="pt-4">{renderColorInputs}</div>
-      <Button onClick={exportConfigZip}>Export Config</Button>
+      <div className="py-12">
+        <h3 className="mb-2 text-lg font-semibold">Themes</h3>
+        <ThemeSelector updateColor={updateColor} />
+      </div>
+      <div className="pt-4">
+        <h3 className="mb-2 text-lg font-semibold">Custom Colors</h3>
+        {renderColorInputs}
+      </div>
+      <Button className="w-full" onClick={exportConfigZip}>
+        Export Config
+      </Button>
     </div>
   );
 };
