@@ -7,7 +7,7 @@ import type { SiteConfig, Colors } from "@/types";
 
 const DEFAULT_CONFIG: SiteConfig = {
   name: "Trevor Tyler Lee",
-  bio: "Free, open source LinkTree alternative built with Astro & Tailwind CSS",
+  bio: "Free, open source Linktree alternative built with Astro & Tailwind CSS",
   profilePicture: "/profile-picture.jpg",
   url: "https://trevortylerlee.com",
   blog: true,
@@ -124,7 +124,7 @@ export default function Tooling() {
             <img src="/android-chrome-192x192.png" className="size-8" />
             <p className="flex flex-wrap items-baseline gap-x-3 text-3xl font-bold">
               TreeLink{" "}
-              <span className="text-sm font-normal text-neutral-400 dark:text-neutral-500">
+              <span className="text-sm font-normal text-muted-foreground">
                 by{" "}
                 <a href="https://trevortylerlee.com" className="underline">
                   Trevor

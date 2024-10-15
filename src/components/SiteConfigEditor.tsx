@@ -226,7 +226,7 @@ const SiteConfigEditor = ({
             <h2 className="inline-flex cursor-pointer p-3 font-bold capitalize">
               {mode} Mode Colors
             </h2>
-            <span id={mode} className="hidden text-sm opacity-50">
+            <span id={mode} className="hidden text-sm text-muted-foreground">
               Active
             </span>
           </summary>

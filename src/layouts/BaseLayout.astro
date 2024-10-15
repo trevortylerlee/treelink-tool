@@ -10,7 +10,7 @@ import Tooling from "@/components/Tooling";
   <BaseHead>
     <slot name="head" />
   </BaseHead>
-  <body class="flex flex-col sm:flex-row">
+  <body class="flex flex-col bg-background sm:flex-row">
     <Tooling client:load />
   </body>
 </html>
@@ -39,9 +39,11 @@ import Tooling from "@/components/Tooling";
     ) {
       darkModeColorsHeading.classList.remove("hidden");
       lightModeColorsHeading.classList.add("hidden");
+      document.documentElement.classList.add("dark");
     } else {
       lightModeColorsHeading.classList.remove("hidden");
       darkModeColorsHeading.classList.add("hidden");
+      document.documentElement.classList.remove("dark");
     }
   }
 
