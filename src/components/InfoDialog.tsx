@@ -26,12 +26,29 @@ export default function DialogDemo(props: DialogProps) {
         <DialogHeader>
           <DialogTitle>About</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            Treelink is a free, open source alternative to Linktree. Create a
+            site using our online tool and deploy to the Internet in minutes.
+          </DialogDescription>
+          <DialogDescription>
+            <a
+              href="https://example.treelink.app"
+              className="text-blue-500 underline"
+            >
+              Live example
+            </a>
+          </DialogDescription>
+          <DialogDescription>
+            <a
+              href="https://docs.treelink.app"
+              className="text-blue-500 underline"
+            >
+              Documentation
+            </a>
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
+        {/* <DialogFooter>
           <Button type="submit">Save changes</Button>
-        </DialogFooter>
+        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );
