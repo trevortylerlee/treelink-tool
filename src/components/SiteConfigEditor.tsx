@@ -230,7 +230,7 @@ const SiteConfigEditor = ({
               Active
             </span>
           </summary>
-          <div className="mt-4 rounded bg-white p-3">
+          <div className="mt-4 rounded p-3">
             {Object.entries(categories).map(([category, categoryColors]) => (
               <div key={category} className="mb-6">
                 <h3 className="mb-3 font-semibold capitalize">{category}</h3>
